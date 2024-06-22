@@ -20,5 +20,3 @@ Potato Leaf Disease Detection is a Flask web application designed to help farmer
 - **TensorFlow/Keras**: For creating and training the deep learning model.
 - **OpenCV**: For image preprocessing and enhancement.
 - **HTML/CSS/JavaScript**: For designing the front-end interface.
-
-![Home page display](Screenshots\Screenshot 2024-06-22 182737.png)
