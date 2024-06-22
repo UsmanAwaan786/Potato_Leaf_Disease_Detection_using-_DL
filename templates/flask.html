@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<header class="masthead" style="background-image: url('static/img/leaf.jpg')">
+    <div class="container position-relative">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-15 col-lg-8 col-xl-10">
+                <div class="site-heading">
+                    <h1>Flask App Code</h1>
+                    <span class="subheading">Back-end</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-javascript.min.js"></script>
+</header>
+
+<div class="container mt-3">
+	<h2>Welcome to the Code Preview Page</h2>
+	<form action="/">
+		<div class="form-group">
+			<label for="code">Code:</label>
+			<pre ><code id="code-preview" class="language-python"></code></pre>
+
+		</div>
+		<button type="submit" class="btn btn-primary">Back</button>
+	</form>
+</div>
+
+<script>
+	// Use JavaScript to read the contents of the text file and display them in the <pre> element
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			document.getElementById("code-preview").innerHTML = this.responseText;
+		}
+	};
+	xhttp.open("GET", "../static/code/flask.txt", true);
+	xhttp.send();
+</script>
+
+
+
+{% endblock %}

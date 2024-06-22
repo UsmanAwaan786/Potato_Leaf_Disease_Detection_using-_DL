@@ -1,0 +1,77 @@
+from flask import Flask, request, render_template
+import tensorflow as tf
+from PIL import Image
+import os
+import numpy as np
+
+app = Flask(__name__)
+
+UPLOAD_FOLDER = 'static/uploads/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+loaded_model = tf.keras.models.load_model("2",compile=True)
+# Map predicted classes to human-readable names
+CLASS_NAMES=["Early Blight","Late Blight","Healthy"]
+
+
+
+def predict_image(image_path):
+    # Load image
+    img = Image.open(image_path)
+    img_array = np.array(img)
+    image_batch=np.expand_dims(img_array,0)
+    prediction = loaded_model.predict(image_batch)
+    Predicted_class=CLASS_NAMES[np.argmax(prediction[0])]
+    return Predicted_class
+
+
+@app.route('/')
+def home():
+    return render_template('home.html')
+
+
+@app.route('/model')
+def about():
+    return render_template('model.html')
+
+@app.route('/flask')
+def flask():
+    return render_template('flask.html')
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    # Check if image was uploaded
+    if 'image' not in request.files:
+        error = 'No image uploaded. Please try again.'
+        return render_template('home.html', error=error)
+    
+    file = request.files['image']
+    # Check if file is an image
+    if file.filename == '':
+        error = 'No image selected. Please try again.'
+        return render_template('home.html', error=error)
+
+    if file and allowed_file(file.filename):
+        # Save image to server
+        filename = file.filename
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Get predicted class
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        class_name = predict_image(image_path)
+        if class_name=="Early Blight":
+            treatment="Early blight can be minimized by maintaining optimum growing conditions, including proper fertilization, irrigation, and management of other pests."
+        if class_name=="Late Blight":
+            treatment="Late blight is controlled by eliminating cull piles and volunteer potatoes, using proper harvesting and storage practices, and applying fungicides when necessary"
+        if class_name=="Healthy":
+            treatment="Maintain even moisture, especially from the time after the flowers bloom. Potatoes need 1 to 2 inches of water a week. Too much water right after planting and not enough as the potatoes begin to form can cause them to become misshapen. Stop watering when the foliage begins to turn yellow and die off"
+        # Render template with image an predicted class
+        return render_template('home.html', image_path=image_path, class_name=class_name, treatment=treatment)
+    else:
+        error = 'Invalid file type. Please upload an image file.'
+        return render_template('home.html', error=error)
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+if __name__ == '__main__':
+    app.run(debug=True)

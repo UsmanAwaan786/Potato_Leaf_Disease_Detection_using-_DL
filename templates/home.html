@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+<header class="masthead" style="background-image: url('static/img/leaf.jpg')">
+    <div class="container position-relative">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-15 col-lg-8 col-xl-10">
+                <div class="site-heading">
+                    <h1>Potato Leaf Disease Detection</h1>
+                    <span class="subheading">Deep Learning</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+                {% if error %}
+                <p class="error">{{ error }}</p>
+                {% endif %}
+    <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+      <div class="upload-section">
+        <input type="file" name="image" id="image" class="btn btn-primary text-uppercase" accept="image/*" required>
+        
+        <label for="image-upload">Choose an image</label>
+      </div>
+      <hr class="my-4" />
+      <input type="submit" class="btn btn-primary text-uppercase" value="Upload Image" class="upload-btn">
+    </form>
+            <!-- Divider-->
+            <hr class="my-4" />
+            <h2>Image Result</h2>
+            <h2>Predicted Result: {{ class_name }}</h2>
+            <p>{{treatment}}</p>
+            <img src="{{ image_path }}" alt="Uploaded Image" width="256" height="256">
+          
+        </div>
+    </div>
+</div>    
+
+{% endblock %}
